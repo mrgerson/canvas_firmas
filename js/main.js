@@ -50,13 +50,14 @@ window.onload = function () {
           throw new Error("Error en la solicitud");
         }
         //return response.text()
-        return response.blob(); // Devuelve el contenido como un blob binario
+        return response.json();
+        //return response.blob(); // Devuelve el contenido como un blob binario
       })
       .then((blob) => {
 
         console.log('respuesta del servidor', blob)
 
-        // Crear un objeto URL para el blob
+       /*  // Crear un objeto URL para el blob
         const url = window.URL.createObjectURL(blob);
         // Crear un enlace <a> temporal para descargar el archivo
         const a = document.createElement("a");
@@ -67,7 +68,7 @@ window.onload = function () {
         a.click();
         // Limpiar después de la descarga
         window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        document.body.removeChild(a); */
       })
       .catch((error) => {
         console.error("Error:", error);

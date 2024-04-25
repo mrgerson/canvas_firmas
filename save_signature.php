@@ -11,11 +11,35 @@ if (isset($_POST['image'])) {
     $filteredData = substr($imageData, strpos($imageData, ",") + 1);
     // desencriptar la imagen que viene en base 64
     $unencodedData = base64_decode($filteredData);
-    
-    $filename = 'pdf/signature_' . uniqid() . '.png '; // Nombre de archivo único
-    file_put_contents($filename, $unencodedData);
 
-    // Crear el PDF
+    $filename = 'pdf/signature_' . uniqid() . '.png '; // Nombre de archivo único
+
+    // Abrir el archivo en modo escritura binaria
+    $fp = fopen($filename, 'wb');
+    if ($fp !== false) {
+        // Escribir los datos binarios de la imagen en el archivo
+        fwrite($fp, $unencodedData);
+        // Cerrar el archivo después de escribir
+        fclose($fp);
+
+        $response = [
+            'success' => true,
+            'message' => 'Imagen guardada correctamente',
+            'filename' => $filename
+        ];
+    } else {
+        $response = [
+            'success' => false,
+            'message' => 'Error al abrir el archivo para escritura'
+        ];
+    }
+
+    // Devolver la respuesta como JSON
+    header('Content-Type: application/json');
+    echo json_encode($response);
+
+
+    /* // Crear el PDF
     $dompdf = new Dompdf();
     // Establecer el tamaño de la página (en este caso, carta)
     $dompdf->setPaper('letter', 'portrait');
@@ -39,7 +63,7 @@ if (isset($_POST['image'])) {
     header('Content-Length: ' . strlen($pdfContent)); // Especificar la longitud del contenido
 
     // Enviar el PDF al navegador
-    echo $pdfContent;
+    echo $pdfContent; */
 } else {
     echo 'Error: No se recibió ninguna imagen.';
 }
