@@ -13,7 +13,6 @@
     <button class="bt" id="clearButton">Limpiar</button>
     <button id="saveButton">Guardar firma</button>
     </div>
-    <a href="prueba.php">dirigir</a>
     <script src="js/main.js"></script>
 </body>
 </html>

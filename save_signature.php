@@ -27,12 +27,15 @@ if (isset($_POST['image'])) {
         $dompdf = new Dompdf();
         // Establecer el tamaño de la página (en este caso, carta)
         $dompdf->setPaper('letter', 'portrait');
+        $variable = "HOLAAAA";
+        $imagen = "/pdf/signature_662abd9940d42.jpg";
 
         // Contenido HTML básico con la imagen
         $html = '<html>
             <body>
                 <h1>Hello, World!</h1>
-                <img src="'.$filename.'" alt="">
+                <p>'.$variable.'</p>
+                <img src="'.$filename .'" alt="Firma">
             </body>
         </html>';
 
