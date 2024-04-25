@@ -1,0 +1,17 @@
+{
+    "name": "gerson/canvas_firmas",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Gerson\\CanvasFirmas\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mrgerson"
+        }
+    ],
+    "require": {
+        "dompdf/dompdf": "^2.0"
+    }
+}

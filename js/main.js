@@ -46,14 +46,28 @@ window.onload = function () {
       body: "image=" + encodeURIComponent(dataURL),
     })
       .then((response) => {
-        if (response.ok) {
-          return response.text(); // Devuelve la respuesta como texto si la solicitud fue exitosa
-        } else {
+        if (!response.ok) {
           throw new Error("Error en la solicitud");
         }
+        //return response.text()
+        return response.blob(); // Devuelve el contenido como un blob binario
       })
-      .then((data) => {
-        console.log(data); // Respuesta del servidor (puede ser una URL a la imagen guardada)
+      .then((blob) => {
+
+        console.log('respuesta del servidor', blob)
+
+        // Crear un objeto URL para el blob
+        const url = window.URL.createObjectURL(blob);
+        // Crear un enlace <a> temporal para descargar el archivo
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "archivo.pdf"; // Establecer el nombre del archivo
+        // Simular un clic en el enlace para iniciar la descarga
+        document.body.appendChild(a);
+        a.click();
+        // Limpiar después de la descarga
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
       })
       .catch((error) => {
         console.error("Error:", error);
