@@ -13,7 +13,8 @@ if (isset($_POST['image'])) {
     $unencodedData = base64_decode($filteredData);
     //$filename = 'pdf/signature_' . uniqid() . '.png '; // Nombre de archivo único
 
-    $filename  = __DIR__ . '/pdf/signature_' . uniqid() . '.png';
+    $fill = '/pdf/signature_' . uniqid() . '.jpg';
+    $filename  = __DIR__ . $fill;
     $fp = fopen($filename, 'wb');
     // Verificar si se pudo abrir el archivo para escritura
     if ($fp = fopen($filename, 'wb')) {
@@ -28,12 +29,11 @@ if (isset($_POST['image'])) {
         $dompdf->setPaper('letter', 'portrait');
 
         // Contenido HTML básico con la imagen
-        // $html = '<html><body><h1>Hello, World!</h1><img src="' . $filename . '" alt="Firma"></body></html>';
         $html = '<html>
-        <body>
-            <h1>Hello, World!</h1>
-            <img src="' . $filename . '" alt="Firma">
-        </body>
+            <body>
+                <h1>Hello, World!</h1>
+                <img src="'.$filename.'" alt="">
+            </body>
         </html>';
 
         // Cargar el HTML en Dompdf
