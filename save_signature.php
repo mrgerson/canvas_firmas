@@ -11,59 +11,60 @@ if (isset($_POST['image'])) {
     $filteredData = substr($imageData, strpos($imageData, ",") + 1);
     // desencriptar la imagen que viene en base 64
     $unencodedData = base64_decode($filteredData);
+    //$filename = 'pdf/signature_' . uniqid() . '.png '; // Nombre de archivo único
 
-    $filename = 'pdf/signature_' . uniqid() . '.png '; // Nombre de archivo único
-
-    // Abrir el archivo en modo escritura binaria
+    $filename  = __DIR__ . '/pdf/signature_' . uniqid() . '.png';
     $fp = fopen($filename, 'wb');
-    if ($fp !== false) {
-        // Escribir los datos binarios de la imagen en el archivo
+    // Verificar si se pudo abrir el archivo para escritura
+    if ($fp = fopen($filename, 'wb')) {
         fwrite($fp, $unencodedData);
-        // Cerrar el archivo después de escribir
+        // Operación de escritura exitosa, cerrar el archivo
         fclose($fp);
 
-        $response = [
-            'success' => true,
-            'message' => 'Imagen guardada correctamente',
-            'filename' => $filename
-        ];
+        // Ahora proceder con la generación del PDF y la operación de guardado
+        // Crear el PDF
+        $dompdf = new Dompdf();
+        // Establecer el tamaño de la página (en este caso, carta)
+        $dompdf->setPaper('letter', 'portrait');
+
+        // Contenido HTML básico con la imagen
+        // $html = '<html><body><h1>Hello, World!</h1><img src="' . $filename . '" alt="Firma"></body></html>';
+        $html = '<html>
+        <body>
+            <h1>Hello, World!</h1>
+            <img src="' . $filename . '" alt="Firma">
+        </body>
+        </html>';
+
+        // Cargar el HTML en Dompdf
+        $dompdf->loadHtml($html);
+
+        // Opción para habilitar PHP
+        $dompdf->set_option('isPhpEnabled', true);
+
+        // Renderizar el PDF
+        $dompdf->render();
+
+        // Obtener el contenido del PDF como cadena
+        $pdfContent = $dompdf->output();
+
+        // Guardar el PDF en el servidor
+        $pdfFilename = __DIR__ . '/pdf/archivo.pdf'; // Ruta donde se guardará el PDF
+        if (file_put_contents($pdfFilename, $pdfContent) !== false) {
+            // Si se guardó correctamente el PDF
+            $response = ['success' => true, 'message' => 'PDF y firma guardados correctamente.', 'html' => $html];
+        } else {
+            // Si hubo un error al guardar el PDF
+            $response = ['success' => false, 'message' => 'Error al guardar el PDF.'];
+        }
     } else {
-        $response = [
-            'success' => false,
-            'message' => 'Error al abrir el archivo para escritura'
-        ];
+        // Si hubo un error al abrir el archivo para escritura
+        $response = ['success' => false, 'message' => 'Error al crear el archivo de imagen.'];
     }
 
-    // Devolver la respuesta como JSON
+    // Devolver la respuesta JSON
     header('Content-Type: application/json');
     echo json_encode($response);
-
-
-    /* // Crear el PDF
-    $dompdf = new Dompdf();
-    // Establecer el tamaño de la página (en este caso, carta)
-    $dompdf->setPaper('letter', 'portrait');
-
-    // Contenido HTML básico con la imagen
-    $html = '<html><body><h1>Hello, World!</h1><img src="' . $filename . '" alt="Firma"></body></html>';
-
-
-    // Permitir que Dompdf acceda a archivos locales
-    $dompdf->set_option('isPhpEnabled', true);
-
-    // Renderizar el PDF
-    $dompdf->render();
-
-    // Obtener el contenido del PDF como cadena
-    $pdfContent = $dompdf->output();
-
-    // Establecer los encabezados para descargar el PDF
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: attachment; filename="archivo.pdf"'); // Establecer el nombre del archivo PDF
-    header('Content-Length: ' . strlen($pdfContent)); // Especificar la longitud del contenido
-
-    // Enviar el PDF al navegador
-    echo $pdfContent; */
 } else {
     echo 'Error: No se recibió ninguna imagen.';
 }

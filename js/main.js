@@ -57,7 +57,7 @@ window.onload = function () {
 
         console.log('respuesta del servidor', blob)
 
-       /*  // Crear un objeto URL para el blob
+        /* // Crear un objeto URL para el blob
         const url = window.URL.createObjectURL(blob);
         // Crear un enlace <a> temporal para descargar el archivo
         const a = document.createElement("a");
